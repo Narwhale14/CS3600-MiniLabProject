@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import LinkShortener from './LinkShortener.vue';
 import Sidebar from './Sidebar.vue';
 import Header from './Header.vue'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const sidebarOpen = ref(false);
+
+// close the sidebar whenever the page changes
+const route = useRoute();
+watch(() => route.path, () => { sidebarOpen.value = false; });
 </script>
 
 <template>
@@ -16,7 +20,7 @@ const sidebarOpen = ref(false);
     </Transition>
 
     <div class="main-page">
-      <LinkShortener/>
+      <RouterView/>
     </div>
   </div>
 </template>
