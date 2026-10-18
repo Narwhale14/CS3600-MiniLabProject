@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { loggedIn } from './auth'
 
-const route = useRoute()
 const router = useRouter()
 </script>
 
@@ -11,7 +10,7 @@ const router = useRouter()
 		<button class="sidebar-button" @click="router.push('/')">Home</button>
 
 		<template v-if="loggedIn">
-			<button class="sidebar-button">View All Links</button>
+			<button class="sidebar-button" @click="router.push('/links')">View All Links</button>
 			<button class="sidebar-button logout-button" @click="loggedIn = false">Log Out</button>
 		</template>
 
