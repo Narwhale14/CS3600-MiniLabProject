@@ -18,7 +18,7 @@ async function copy() {
 </script>
 
 <template>
-  <h1 class="title-text">shortbeep</h1>
+  <h1 class="title-text">shortlink</h1>
   <div class="controls-wrapper">
     <!-- input and shorten button -->
     <div class="input-wrapper">
