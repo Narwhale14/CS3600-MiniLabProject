@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { loggedIn } from './auth'
+import { loggedIn } from '../auth'
 
 const router = useRouter()
 </script>

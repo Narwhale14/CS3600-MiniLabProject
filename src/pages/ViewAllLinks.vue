@@ -106,6 +106,7 @@ function cancelEdit() {
   overflow-x: auto;
   border-radius: 0.4rem;
   box-sizing: border-box;
+  border: 2px solid cornflowerblue;
 }
 
 .links-table {

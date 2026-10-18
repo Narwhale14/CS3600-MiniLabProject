@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Sidebar from './Sidebar.vue';
-import Header from './Header.vue'
+import Sidebar from './components/Sidebar.vue';
+import Header from './components/Header.vue'
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
