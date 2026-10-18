@@ -45,6 +45,7 @@ function cancelEdit() {
 
   <div class="table-wrapper">
     <table class="links-table">
+      <!-- table header columns-->
       <thead>
         <tr>
           <th class="id-column">ID</th>
@@ -54,15 +55,18 @@ function cancelEdit() {
         </tr>
       </thead>
 
+      <!-- all the users links -->
       <tbody>
         <tr v-for="link in links" :key="link.id">
+          <!-- link id -->
           <td>{{ link.id }}</td>
 
+          <!-- the shortened link -->
           <td>
             <div class="short-link">
               <span>{{ domain }}/</span>
               <span v-if="editingId === link.id" class="code-edit">
-                <input class="code-input" v-model="draftCode" v-focus maxlength="20" @keyup.enter="saveEdit(link)" @keyup.esc="cancelEdit">
+                <input class="code-input" v-model="draftCode" v-focus maxlength="64" @keyup.enter="saveEdit(link)" @keyup.esc="cancelEdit">
                 <span class="edit-buttons">
                   <button class="action-button save-button pi pi-check" @click="saveEdit(link)"></button>
                   <button class="action-button pi pi-times" @click="cancelEdit"></button>
@@ -72,10 +76,12 @@ function cancelEdit() {
             </div>
           </td>
 
+          <!-- the unshortened link -->
           <td>
             <div class="scroll-cell">{{ link.url }}</div>
           </td>
 
+          <!-- the action icons -->
           <td>
             <div class="actions">
               <button class="action-button pi pi-pencil" @click="startEdit(link)"></button>

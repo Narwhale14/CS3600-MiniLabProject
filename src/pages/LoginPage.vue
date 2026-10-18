@@ -39,10 +39,13 @@ function submit() {
     <h1 class="title-text">log in</h1>
 
     <div class="fields">
+      <!-- username/email field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.user }" v-model="user" placeholder="Username or Email" autocomplete="username"/>
         <p v-if="errors.user" class="error">{{ errors.user }}</p>
       </div>
+
+      <!-- password field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.password }" v-model="password" type="password" placeholder="Password" autocomplete="current-password"/>
         <p v-if="errors.password" class="error">{{ errors.password }}</p>

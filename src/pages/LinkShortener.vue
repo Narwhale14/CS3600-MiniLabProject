@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 const link = ref('')
+const code = ref('')
 const shortlink = ref('')
 
 async function shorten() {
@@ -25,6 +26,12 @@ async function copy() {
       <input class="link-input" v-model="link" placeholder="Enter your link"/>
       <button v-if="link" class="clear-button pi pi-times" @click="link = ''"></button>
       <button class="button pi pi-arrow-right" @click="shorten"></button>
+    </div>
+
+    <!-- optional custom code -->
+    <div class="input-wrapper">
+      <input class="link-input" style="flex: 1" v-model="code" maxlength="64" placeholder="Custom Link Code (Optional)">
+      <button v-if="code" class="clear-button pi pi-times" style="right: 0.5rem" @click="code = ''"></button>
     </div>
 
     <!-- output and copy button -->
@@ -59,26 +66,26 @@ async function copy() {
   right: 3rem;
   top: 50%;
   transform: translateY(-50%);
-
   background: none;
   border: none;
-
   color: gray;
+  font-size: 1rem;
 }
 
 .clear-button:hover {
-  color: gainsboro
+  color: gainsboro;
 }
 
 .button {
   width: 2.5rem;
   border: 0;
   border-radius: 0 0.4rem 0.4rem 0;
-  color: gainsboro
+  color: gainsboro;
+  font-size: 1rem;
 }
 
 .button:hover {
-  color: whitesmoke
+  color: whitesmoke;
 }
 
 .input-wrapper {

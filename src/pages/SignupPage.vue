@@ -60,18 +60,25 @@ function submit() {
     <h1 class="title-text">sign up</h1>
 
     <div class="fields">
+      <!-- username field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.username }" v-model="username" placeholder="Username" autocomplete="username"/>
         <p v-if="errors.username" class="error">{{ errors.username }}</p>
       </div>
+
+      <!-- email field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.email }" v-model="email" type="email" placeholder="Email" autocomplete="email"/>
         <p v-if="errors.email" class="error">{{ errors.email }}</p>
       </div>
+
+      <!-- password field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.password }" v-model="password" type="password" placeholder="Password" autocomplete="new-password"/>
         <p v-if="errors.password" class="error">{{ errors.password }}</p>
       </div>
+
+      <!-- confirm password field -->
       <div class="field">
         <input class="form-input" :class="{ invalid: errors.confirmPassword }" v-model="confirmPassword" type="password" placeholder="Confirm Password" autocomplete="new-password"/>
         <p v-if="errors.confirmPassword" class="error">{{ errors.confirmPassword }}</p>

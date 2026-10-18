@@ -4,6 +4,7 @@ const emit = defineEmits(['toggle-sidebar']);
 
 <template>
   <div class="header">
+    <RouterLink to="/" class="home-link">shortlink</RouterLink>
 		<button class="profile-button pi pi-user" @click="emit('toggle-sidebar')"></button>
 	</div>
 </template>
@@ -12,7 +13,7 @@ const emit = defineEmits(['toggle-sidebar']);
 .header {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
 
@@ -21,6 +22,14 @@ const emit = defineEmits(['toggle-sidebar']);
   height: 4rem;
   padding: 0 1rem;
   box-sizing: border-box;
+}
+
+.home-link {
+  font-size: 1.75rem;
+  color: cornflowerblue;
+  text-decoration: none;
+  user-select: none;
+  font-weight: bold;
 }
 
 .profile-button {
