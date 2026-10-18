@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { loggedIn } from './auth'
 
+const route = useRoute()
 const router = useRouter()
 </script>
 
 <template>
 	<div class="sidebar">
+		<button class="sidebar-button" @click="router.push('/')">Home</button>
+
 		<template v-if="loggedIn">
 			<button class="sidebar-button">View All Links</button>
 			<button class="sidebar-button logout-button" @click="loggedIn = false">Log Out</button>
@@ -38,13 +41,14 @@ const router = useRouter()
 	height: 2.5rem;
 	border: none;
 	border-radius: 0.4rem;
-	color: gainsboro;
+	background-color: cornflowerblue;
+	color: Canvas;
 	cursor: pointer;
 	font-size: 1rem;
 }
 
 .sidebar-button:hover {
-	color: whitesmoke;
+	background-color: color-mix(in oklab, cornflowerblue, black 10%);
 }
 
 .logout-button {
@@ -56,6 +60,6 @@ const router = useRouter()
 
 .logout-button:hover {
 	background-color: crimson;
-	color: whitesmoke;
+	color: Canvas;
 }
 </style>

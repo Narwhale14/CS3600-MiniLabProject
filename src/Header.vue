@@ -29,7 +29,7 @@ const emit = defineEmits(['toggle-sidebar']);
   border-radius: 50%;
   border: none;
   background-color: cornflowerblue;
-  color: whitesmoke;
+  color: Canvas;
   cursor: pointer;
 	font-size: x-large;
 }

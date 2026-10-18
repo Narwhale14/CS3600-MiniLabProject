@@ -37,14 +37,14 @@ watch(() => route.path, () => { sidebarOpen.value = false; });
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: safe center;
   align-items: center;
   gap: 2rem;
 
   box-sizing: border-box;
   padding-bottom: 8rem;
 
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .slide-enter-active, .slide-leave-active {
