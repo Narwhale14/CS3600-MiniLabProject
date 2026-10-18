@@ -1,11 +1,26 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LinkShortener from './LinkShortener.vue';
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="main-page">
+    <LinkShortener/>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.main-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 8rem;
+
+  overflow: hidden;
+}
+</style>
