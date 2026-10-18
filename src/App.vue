@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LinkShortener from './LinkShortener.vue';
 import Sidebar from './Sidebar.vue';
+import Header from './Header.vue'
 import { ref } from 'vue';
 
 const sidebarOpen = ref(false);
@@ -8,12 +9,12 @@ const sidebarOpen = ref(false);
 
 <template>
   <div class="app">
-    <div class="header">
-      <button class="profile-button pi pi-user" @click="sidebarOpen = !sidebarOpen"></button>
-    </div>
-
-    <Sidebar v-if="sidebarOpen"></Sidebar>
+    <Header @toggle-sidebar="sidebarOpen = !sidebarOpen"/>
     
+    <Transition name="slide">
+      <Sidebar v-if="sidebarOpen"></Sidebar>
+    </Transition>
+
     <div class="main-page">
       <LinkShortener/>
     </div>
@@ -42,27 +43,11 @@ const sidebarOpen = ref(false);
   overflow: hidden;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  flex-shrink: 0;
-
-  background-color: var(--canvas-dark);
-  width: 100%;
-  height: 4rem;
-  padding: 0 1rem;
-  box-sizing: border-box;
+.slide-enter-active, .slide-leave-active {
+  transition: transform 0.2s ease;
 }
 
-.profile-button {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: none;
-  background-color: cornflowerblue;
-  color: whitesmoke;
-  cursor: pointer;
+.slide-enter-from, .slide-leave-to {
+  transform: translateX(100%);
 }
 </style>
