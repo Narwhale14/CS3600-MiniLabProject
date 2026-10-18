@@ -2,6 +2,7 @@
 
 :root {
     color-scheme: dark;
+    --canvas-dark: color-mix(in oklab, Canvas, black 10%);
 }
 
 body {
