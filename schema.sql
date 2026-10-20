@@ -11,6 +11,7 @@ CREATE TABLE links (
     user_id BIGINT UNSIGNED NULL,
     link TEXT NOT NULL,
     code VARCHAR(24) NOT NULL UNIQUE,
+    private BOOL NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
