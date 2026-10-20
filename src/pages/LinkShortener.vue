@@ -29,9 +29,16 @@ async function copy() {
     </div>
 
     <!-- optional custom code -->
-    <div class="input-wrapper">
-      <input class="link-input" style="flex: 1" v-model="code" maxlength="64" placeholder="Custom Link Code (Optional)">
-      <button v-if="code" class="clear-button pi pi-times" style="right: 0.5rem" @click="code = ''"></button>
+    <div class="code-row">
+      <div class="input-wrapper" style="flex: 1">
+        <input class="link-input" style="flex: 1" v-model="code" maxlength="64" placeholder="Custom Link Code (Optional)">
+        <button v-if="code" class="clear-button pi pi-times" style="right: 0.5rem" @click="code = ''"></button>
+      </div>
+
+      <!-- making it private -->
+      <div class="checkbox-slot">
+        <input type="checkbox" class="checkbox" title="Private Link">
+      </div>
     </div>
 
     <!-- output and copy button -->
@@ -93,6 +100,25 @@ async function copy() {
   display: flex;
   outline: 2px solid cornflowerblue;
   border-radius: 0.4rem;
+}
+
+.code-row {
+  display: flex;
+}
+
+.checkbox-slot {
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  margin: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: cornflowerblue;
+  cursor: pointer;
 }
 
 .controls-wrapper {
