@@ -11,6 +11,7 @@ const router = useRouter()
 
 		<template v-if="loggedIn">
 			<button class="sidebar-button" @click="router.push('/links')">View All Links</button>
+			<button class="sidebar-button" @click="router.push('/profile')">Profile</button>
 			<button class="sidebar-button logout-button" @click="loggedIn = false">Log Out</button>
 		</template>
 

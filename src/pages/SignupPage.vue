@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { loggedIn } from '../auth'
+import { loggedIn, checkUsername, checkPassword, checkConfirmPassword } from '../auth'
 
 const router = useRouter()
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -13,14 +13,7 @@ const confirmPassword = ref('')
 const errors = reactive({ username: '', email: '', password: '', confirmPassword: '' })
 
 function submit() {
-  const trimmedUsername = username.value.trim()
-  if(trimmedUsername === '') {
-    errors.username = 'Username is required'
-  } else if(!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
-    errors.username = 'Username can only contain letters, numbers and underscores'
-  } else {
-    errors.username = ''
-  }
+  errors.username = checkUsername(username.value)
 
   const trimmedEmail = email.value.trim()
   if(trimmedEmail === '') {
@@ -31,25 +24,11 @@ function submit() {
     errors.email = ''
   }
 
-  if(password.value === '') {
-    errors.password = 'Password is required'
-  } else if(password.value.length < 8) {
-    errors.password = 'Password must be at least 8 characters'
-  } else {
-    errors.password = ''
-  }
-
-  if(confirmPassword.value === '') {
-    errors.confirmPassword = 'Please confirm your password'
-  } else if(confirmPassword.value !== password.value) {
-    errors.confirmPassword = 'Passwords do not match'
-  } else {
-    errors.confirmPassword = ''
-  }
+  errors.password = checkPassword(password.value)
+  errors.confirmPassword = checkConfirmPassword(password.value, confirmPassword.value)
 
   if(Object.values(errors).some(error => error)) return
 
-  // frontend only for now, so any valid input counts as a new account
   loggedIn.value = true
   router.push('/')
 }
