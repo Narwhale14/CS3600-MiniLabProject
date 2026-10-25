@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { loggedIn } from '../auth'
+import { csrfToken, getSession } from '../auth'
 
 const router = useRouter()
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -10,8 +10,9 @@ const user = ref('')
 const password = ref('')
 const errors = reactive({ user: '', password: '' })
 
-function submit() {
+async function submit() {
   const trimmedUser = user.value.trim()
+
   if(trimmedUser === '') {
     errors.user = 'Please enter your username or email'
   } else if(trimmedUser.includes('@') && !emailPattern.test(trimmedUser)) {
@@ -28,9 +29,34 @@ function submit() {
 
   if(errors.user || errors.password) return
 
-  // frontend only for now, so any valid input counts as a successful login
-  loggedIn.value = true
-  router.push('/')
+  try {
+    const response = await fetch('/api/shortlink.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken.value
+      },
+      body: JSON.stringify({
+        action: 'login',
+        user: user.value.trim(),
+        password: password.value
+      })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      errors.password = data.error || 'Login failed'
+      return
+    }
+
+    await getSession()
+    router.push('/')
+
+  } catch (err) {
+    console.error('Login failed:', err)
+    errors.password = 'Unable to connect to the server'
+  }
 }
 </script>
 

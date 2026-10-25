@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { loggedIn } from '../auth'
+import { loggedIn, csrfToken, checkUsername, checkPassword, checkConfirmPassword } from '../auth'
 
 const router = useRouter()
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -12,15 +12,8 @@ const password = ref('')
 const confirmPassword = ref('')
 const errors = reactive({ username: '', email: '', password: '', confirmPassword: '' })
 
-function submit() {
-  const trimmedUsername = username.value.trim()
-  if(trimmedUsername === '') {
-    errors.username = 'Username is required'
-  } else if(!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
-    errors.username = 'Username can only contain letters, numbers and underscores'
-  } else {
-    errors.username = ''
-  }
+async function submit() {
+  errors.username = checkUsername(username.value)
 
   const trimmedEmail = email.value.trim()
   if(trimmedEmail === '') {
@@ -31,27 +24,40 @@ function submit() {
     errors.email = ''
   }
 
-  if(password.value === '') {
-    errors.password = 'Password is required'
-  } else if(password.value.length < 8) {
-    errors.password = 'Password must be at least 8 characters'
-  } else {
-    errors.password = ''
-  }
-
-  if(confirmPassword.value === '') {
-    errors.confirmPassword = 'Please confirm your password'
-  } else if(confirmPassword.value !== password.value) {
-    errors.confirmPassword = 'Passwords do not match'
-  } else {
-    errors.confirmPassword = ''
-  }
+  errors.password = checkPassword(password.value)
+  errors.confirmPassword = checkConfirmPassword(password.value, confirmPassword.value)
 
   if(Object.values(errors).some(error => error)) return
 
-  // frontend only for now, so any valid input counts as a new account
-  loggedIn.value = true
-  router.push('/')
+  try {
+    const response = await fetch('/api/shortlink.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken.value
+      },
+      body: JSON.stringify({
+        action: 'signup',
+        username: username.value.trim(),
+        email: email.value.trim(),
+        password: password.value
+      })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      errors.username = data.error || 'Signup failed'
+      return
+    }
+
+    loggedIn.value = true
+    router.push('/')
+
+  } catch (err) {
+    console.error('Signup failed:', err)
+    errors.username = 'Unable to connect to the server'
+  }
 }
 </script>
 
