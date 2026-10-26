@@ -5,8 +5,8 @@ const emit = defineEmits(['toggle-sidebar']);
 <template>
   <div class="header">
     <RouterLink to="/" class="home-link">shortlink</RouterLink>
-		<button class="profile-button pi pi-user" @click="emit('toggle-sidebar')"></button>
-	</div>
+    <button class="profile-button pi pi-user" @click="emit('toggle-sidebar')"></button>
+  </div>
 </template>
 
 <style scoped>
@@ -40,6 +40,6 @@ const emit = defineEmits(['toggle-sidebar']);
   background-color: cornflowerblue;
   color: Canvas;
   cursor: pointer;
-	font-size: x-large;
+  font-size: x-large;
 }
 </style>

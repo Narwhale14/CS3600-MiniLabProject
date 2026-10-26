@@ -10,10 +10,6 @@ body {
     margin: 0;
 }
 
-button:focus {
-    outline: none;
-}
-
-input:focus {
+button:focus, input:focus {
     outline: none;
 }

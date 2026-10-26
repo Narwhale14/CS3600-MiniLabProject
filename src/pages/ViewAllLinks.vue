@@ -1,35 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
+import { api } from '../auth';
 
 interface Link {
-  id: number
+  link_id: number
   code: string
-  url: string
-};
+  link: string
+  private: boolean | number
+}
 
-const domain = location.host;
+const domain = 'localhost:5173';
 
-// hard coded test row
-const links = ref<Link[]>([
-  {
-    id: 1,
-    code: '123abc67',
-    url: 'https://www.google.com',
-  },
-]);
-
+const links = ref<Link[]>([]);
 const editingId = ref<number | null>(null);
 const draftCode = ref('');
+const error = ref('');
 const vFocus = { mounted: (element: HTMLElement) => element.focus() };
 
+async function getLinks() {
+  const data = await api('getLinks');
+  links.value = data.links ?? [];
+  error.value = data.error ?? '';
+}
+
 function startEdit(link: Link) {
-  editingId.value = link.id;
+  editingId.value = link.link_id;
   draftCode.value = link.code;
 }
 
-function saveEdit(link: Link) {
+async function saveEdit(link: Link) {
   const code = draftCode.value.trim();
   if(!code) return;
+
+  const data = await api('editLink', { link_id: link.link_id, link: link.link, code, private: Boolean(link.private) });
+  error.value = data.error ?? '';
+  if(data.error) return;
 
   link.code = code;
   editingId.value = null;
@@ -38,14 +43,40 @@ function saveEdit(link: Link) {
 function cancelEdit() {
   editingId.value = null;
 }
+
+async function togglePrivate(link: Link) {
+  const data = await api('editLink', { link_id: link.link_id, link: link.link, code: link.code, private: !link.private });
+  error.value = data.error ?? '';
+  if(!data.error) link.private = !link.private;
+}
+
+async function deleteLink(link: Link) {
+  const data = await api('deleteLink', { link_id: link.link_id });
+  error.value = data.error ?? '';
+  if(!data.error) links.value = links.value.filter(item => item.link_id !== link.link_id);
+}
+
+async function copyLink(link: Link) {
+  try {
+    await navigator.clipboard.writeText(`http://${domain}/${link.code}`);
+    error.value = '';
+  } catch(err) {
+    console.error('Failed to copy link:', err);
+    error.value = 'Failed to copy link';
+  }
+}
+
+onMounted(getLinks);
 </script>
 
 <template>
   <h1 class="title-text">your links</h1>
 
+  <p v-if="error" class="error">{{ error }}</p>
+
   <div class="table-wrapper">
     <table class="links-table">
-      <!-- table header columns-->
+      <!-- table header columns -->
       <thead>
         <tr>
           <th class="id-column">ID</th>
@@ -55,18 +86,18 @@ function cancelEdit() {
         </tr>
       </thead>
 
-      <!-- all the users links -->
+      <!-- all the user's links -->
       <tbody>
-        <tr v-for="link in links" :key="link.id">
+        <tr v-for="link in links" :key="link.link_id">
           <!-- link id -->
-          <td>{{ link.id }}</td>
+          <td>{{ link.link_id }}</td>
 
           <!-- the shortened link -->
           <td>
             <div class="short-link">
               <span>{{ domain }}/</span>
-              <span v-if="editingId === link.id" class="code-edit">
-                <input class="code-input" v-model="draftCode" v-focus maxlength="64" @keyup.enter="saveEdit(link)" @keyup.esc="cancelEdit">
+              <span v-if="editingId === link.link_id" class="code-edit">
+                <input class="code-input" v-model="draftCode" v-focus maxlength="24" @keyup.enter="saveEdit(link)" @keyup.esc="cancelEdit">
                 <span class="edit-buttons">
                   <button class="action-button save-button pi pi-check" @click="saveEdit(link)"></button>
                   <button class="action-button pi pi-times" @click="cancelEdit"></button>
@@ -76,16 +107,18 @@ function cancelEdit() {
             </div>
           </td>
 
-          <!-- the unshortened link -->
+          <!-- the original link -->
           <td>
-            <div class="scroll-cell">{{ link.url }}</div>
+            <div class="scroll-cell">{{ link.link }}</div>
           </td>
 
-          <!-- the action icons -->
+          <!-- action icons -->
           <td>
             <div class="actions">
-              <button class="action-button pi pi-pencil" @click="startEdit(link)"></button>
-              <button class="action-button delete-button pi pi-trash"></button>
+              <button class="action-button pi pi-copy" title="Copy shortened link" @click="copyLink(link)"></button>
+              <input type="checkbox" class="private-checkbox" :checked="Boolean(link.private)" title="Is Private" @click.prevent="togglePrivate(link)">
+              <button class="action-button pi pi-pencil" title="Edit link" @click="startEdit(link)"></button>
+              <button class="action-button delete-button pi pi-trash" title="Delete link" @click="deleteLink(link)"></button>
             </div>
           </td>
         </tr>
@@ -95,12 +128,6 @@ function cancelEdit() {
 </template>
 
 <style scoped>
-.title-text {
-  font-size: 5rem;
-  color: cornflowerblue;
-  user-select: none;
-}
-
 .table-wrapper {
   max-width: 100%;
   overflow-x: auto;
@@ -174,6 +201,7 @@ function cancelEdit() {
 .actions {
   display: flex;
   justify-content: end;
+  align-items: center;
   gap: 0.75rem;
 }
 
@@ -190,6 +218,14 @@ function cancelEdit() {
   color: gainsboro;
 }
 
+.private-checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: cornflowerblue;
+  cursor: pointer;
+}
+
 .delete-button {
   color: crimson;
 }
@@ -198,3 +234,5 @@ function cancelEdit() {
   color: color-mix(in oklab, crimson, white 20%);
 }
 </style>
+
+<style scoped src="./form.css"></style>

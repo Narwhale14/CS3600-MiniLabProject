@@ -14,14 +14,15 @@ watch(() => route.path, () => { sidebarOpen.value = false; });
 <template>
   <div class="app">
     <Header @toggle-sidebar="sidebarOpen = !sidebarOpen"/>
-    
-    <Transition name="slide">
-      <Sidebar v-if="sidebarOpen"></Sidebar>
-    </Transition>
 
     <div class="main-page">
       <RouterView/>
     </div>
+
+    <div v-if="sidebarOpen" class="backdrop" @click="sidebarOpen = false"></div>
+    <Transition name="slide">
+      <Sidebar v-if="sidebarOpen"></Sidebar>
+    </Transition>
   </div>
 </template>
 
@@ -45,6 +46,11 @@ watch(() => route.path, () => { sidebarOpen.value = false; });
   padding-bottom: 8rem;
 
   overflow-y: auto;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 4rem 0 0 0;
 }
 
 .slide-enter-active, .slide-leave-active {

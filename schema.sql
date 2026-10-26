@@ -1,3 +1,6 @@
+CREATE USER IF NOT EXISTS 'shortlink'@'localhost' IDENTIFIED BY 'shortlink';
+GRANT ALL ON shortlink.* TO 'shortlink'@'localhost';
+
 CREATE TABLE users (
     user_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,

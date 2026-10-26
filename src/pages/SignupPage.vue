@@ -1,36 +1,29 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { loggedIn, checkUsername, checkPassword, checkConfirmPassword } from '../auth'
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { loggedIn, api, checkUsername, checkEmail, checkPassword, checkConfirmPassword } from '../auth';
 
-const router = useRouter()
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const router = useRouter();
 
-const username = ref('')
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const errors = reactive({ username: '', email: '', password: '', confirmPassword: '' })
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const errors = reactive({ username: '', email: '', password: '', confirmPassword: '' });
 
-function submit() {
-  errors.username = checkUsername(username.value)
+async function submit() {
+  errors.username = checkUsername(username.value);
+  errors.email = checkEmail(email.value);
+  errors.password = checkPassword(password.value);
+  errors.confirmPassword = checkConfirmPassword(password.value, confirmPassword.value);
+  if(Object.values(errors).some(error => error)) return;
 
-  const trimmedEmail = email.value.trim()
-  if(trimmedEmail === '') {
-    errors.email = 'Email is required'
-  } else if(!emailPattern.test(trimmedEmail)) {
-    errors.email = 'Please enter a valid email'
-  } else {
-    errors.email = ''
-  }
+  const data = await api('signup', { username: username.value.trim(), email: email.value.trim(), password: password.value });
+  errors.username = data.error ?? '';
+  if(data.error) return;
 
-  errors.password = checkPassword(password.value)
-  errors.confirmPassword = checkConfirmPassword(password.value, confirmPassword.value)
-
-  if(Object.values(errors).some(error => error)) return
-
-  loggedIn.value = true
-  router.push('/')
+  loggedIn.value = true;
+  router.push('/');
 }
 </script>
 

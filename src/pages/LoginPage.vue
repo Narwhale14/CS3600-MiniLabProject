@@ -1,36 +1,26 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { loggedIn } from '../auth'
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { loggedIn, api, checkEmail } from '../auth';
 
-const router = useRouter()
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const router = useRouter();
 
-const user = ref('')
-const password = ref('')
-const errors = reactive({ user: '', password: '' })
+const user = ref('');
+const password = ref('');
+const errors = reactive({ user: '', password: '' });
 
-function submit() {
-  const trimmedUser = user.value.trim()
-  if(trimmedUser === '') {
-    errors.user = 'Please enter your username or email'
-  } else if(trimmedUser.includes('@') && !emailPattern.test(trimmedUser)) {
-    errors.user = 'Please enter a valid email'
-  } else {
-    errors.user = ''
-  }
+async function submit() {
+  const trimmedUser = user.value.trim();
+  errors.user = trimmedUser === '' ? 'Please enter your username or email' : trimmedUser.includes('@') ? checkEmail(trimmedUser) : '';
+  errors.password = password.value === '' ? 'Please enter your password' : '';
+  if(errors.user || errors.password) return;
 
-  if(password.value === '') {
-    errors.password = 'Please enter your password'
-  } else {
-    errors.password = ''
-  }
+  const data = await api('login', { user: trimmedUser, password: password.value });
+  errors.password = data.error ?? '';
+  if(data.error) return;
 
-  if(errors.user || errors.password) return
-
-  // frontend only for now, so any valid input counts as a successful login
-  loggedIn.value = true
-  router.push('/')
+  loggedIn.value = true;
+  router.push('/');
 }
 </script>
 
@@ -41,13 +31,13 @@ function submit() {
     <div class="fields">
       <!-- username/email field -->
       <div class="field">
-        <input class="form-input" :class="{ invalid: errors.user }" v-model="user" placeholder="Username or Email" autocomplete="username"/>
+        <input class="form-input" :class="{ invalid: errors.user }" v-model="user" placeholder="Username or Email"/>
         <p v-if="errors.user" class="error">{{ errors.user }}</p>
       </div>
 
       <!-- password field -->
       <div class="field">
-        <input class="form-input" :class="{ invalid: errors.password }" v-model="password" type="password" placeholder="Password" autocomplete="current-password"/>
+        <input class="form-input" :class="{ invalid: errors.password }" v-model="password" type="password" placeholder="Password"/>
         <p v-if="errors.password" class="error">{{ errors.password }}</p>
       </div>
     </div>
